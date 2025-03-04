@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>🔥 Smart Fire Detection System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #ff4757;
+            --secondary-color: #2f3542;
+            --success-color: #2ed573;
+            --warning-color: #ffa502;
+            --background-color: #f1f2f6;
+            --card-background: #ffffff;
+            --text-primary: #2f3542;
+            --text-secondary: #747d8c;
+            --shadow: 0 4px 15px rgba(0,0,0,0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary-color), #ff6b81);
+            color: white;
+            padding: 20px 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .logo i {
+            font-size: 2rem;
+        }
+
+        .main-content {
+            margin-top: 100px;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 25px;
+            padding: 20px;
+        }
+
+        .video-section {
+            background: var(--card-background);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .video-container {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: #000;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .video-container video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .video-placeholder {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #ffffff;
+            background: linear-gradient(45deg, #2c3e50, #3498db);
+        }
+
+        .video-placeholder i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .alert-history {
+            background: var(--card-background);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .history-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--background-color);
+        }
+
+        .history-entry {
+            background: var(--background-color);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px 0;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .history-entry:hover {
+            transform: translateX(5px);
+            box-shadow: var(--shadow);
+        }
+
+        .timestamp {
+            color: var(--text-secondary);
+            font-size: 0.9em;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .alert-banner {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #ff4757, #ff6b81);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            display: none;
+            animation: slideDown 0.5s ease-out;
+            z-index: 1000;
+            min-width: 300px;
+        }
+
+        .alert-banner.active {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .alert-content {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            background: var(--success-color);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes slideDown {
+            from { transform: translate(-50%, -100%); }
+            to { transform: translate(-50%, 0); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            .container {
+                padding: 10px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 10px;
+            }
+            .main-content {
+                margin-top: 140px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-fire"></i>
+                <span>Smart Fire Detection System</span>
+            </div>
+            <div class="status-indicator">
+                <div class="status-dot"></div>
+                <span>System Active</span>
+            </div>
+        </div>
+    </header>
+
+    <div id="alertBanner" class="alert-banner">
+        <div class="alert-content">
+            <i class="fas fa-fire-alt alert-icon"></i>
+            <div>
+                <strong>Fire Alert!</strong>
+                <p id="alertMessage"></p>
+            </div>
+        </div>
+        <button class="dismiss-btn" onclick="dismissAlert()">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+
+    <div class="container">
+        <div class="main-content">
+            <div class="video-section">
+                <h2><i class="fas fa-video"></i> Live Detection Feed</h2>
+                <div class="video-container">
+                    <div id="videoPlaceholder" class="video-placeholder">
+                        <i class="fas fa-camera"></i>
+                        <p>Waiting for fire detection...</p>
+                    </div>
+                    <video id="detectionVideo" style="display: none;" controls>
+                        Your browser does not support the video element.
+                    </video>
+                </div>
+            </div>
+
+            <div class="alert-history">
+                <div class="history-title">
+                    <i class="fas fa-history"></i>
+                    <h2>Alert History</h2>
+                </div>
+                <div id="historyList">
+                    <div class="no-alerts">
+                        <i class="fas fa-check-circle"></i>
+                        No alerts detected yet
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <script>
+        const socket = io();
+        const alertBanner = document.getElementById('alertBanner');
+        const alertMessage = document.getElementById('alertMessage');
+        const historyList = document.getElementById('historyList');
+        const videoElement = document.getElementById('detectionVideo');
+        const videoPlaceholder = document.getElementById('videoPlaceholder');
+    
+        function formatTimestamp(timestamp) {
+            return new Date(timestamp * 1000).toLocaleString();
+        }
+    
+        function updateVideo() {
+            videoElement.src = 'static/fire_detection.mp4';
+            videoElement.style.display = 'block';
+            videoPlaceholder.style.display = 'none';
+            
+            videoElement.play().catch(error => {
+                console.log('Video autoplay failed:', error);
+            });
+        }
+    
+        socket.on('fire_alert', function(data) {
+            // Parse latitude from the alert message
+            const latitudeMatch = data.message.match(/Latitude: (\d+(\.\d+)?)/);
+            const alertLatitude = latitudeMatch ? parseFloat(latitudeMatch[1]) : null;
+            
+            // Get station access level from server-side template
+            const accessLevel = '{{ access_level }}';
+            const assignedLatitude = {{ assigned_latitude|default('null') }};
+            
+            // Determine if this station should see the alert
+            let shouldShowAlert = false;
+            
+            if (accessLevel === 'central') {
+                // Central station sees all alerts
+                shouldShowAlert = true;
+            } else if (accessLevel === 'station') {
+                if (assignedLatitude === 16) {
+                    // Station 1 only sees alerts for latitude 16
+                    shouldShowAlert = (alertLatitude === 16);
+                } else {
+                    // Station 2 sees alerts for all other latitudes
+                    shouldShowAlert = (alertLatitude !== 16);
+                }
+            }
+            
+            if (shouldShowAlert) {
+                // Update alert banner
+                alertMessage.textContent = data.message;
+                alertBanner.classList.add('active');
+                
+                // Update video
+                updateVideo();
+                
+                // Add to history
+                const historyEntry = document.createElement('div');
+                historyEntry.classList.add('history-entry');
+                historyEntry.innerHTML = `
+                    <div class="timestamp">
+                        <i class="far fa-clock"></i>
+                        ${formatTimestamp(data.timestamp)}
+                    </div>
+                    <div class="alert-content">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        ${data.message}
+                    </div>
+                `;
+                
+                if (historyList.querySelector('.no-alerts')) {
+                    historyList.innerHTML = '';
+                }
+                
+                historyList.insertBefore(historyEntry, historyList.firstChild);
+            }
+        });
+    
+        function dismissAlert() {
+            alertBanner.classList.remove('active');
+        }
+    </script>
+</body>
+</html>
